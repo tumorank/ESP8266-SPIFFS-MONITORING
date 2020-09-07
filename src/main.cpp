@@ -34,7 +34,7 @@ ESP8266WebServer server(80);
 bool SPIFFS_present = false;
 bool      AScale, auto_smooth, AUpdate;
 bool log_delete_approved,update_speed=0;
-String lastcall,DataFile = "/datalog.txt";
+String lastcall,DataFile = "/datalog.csv";
 String motorState = "STOP",kondisi;
 int16_t speed_in=0;
 int16_t speed_default=3000;
@@ -86,6 +86,13 @@ void setup()
       Serial.println(F("SPIFFS initialised... file access enabled..."));
       SPIFFS_present = true; 
     }
+  File datafile = SPIFFS.open(DataFile, "a+");
+    if (datafile == true) 
+    { // if the file is available, write to it
+      datafile.println("No;status;Kecepatan;iBus;vBus;pBus;Temperature."); // TAB delimited
+      Serial.println(((log_count<10)?"0":"")+String(log_count)+" New Record Added");
+    }
+    datafile.close();
     
 }
 void loop() {
@@ -195,7 +202,7 @@ interval_update=log_interval;
     File datafile = SPIFFS.open(DataFile, "a+");
     if (datafile == true) 
     { // if the file is available, write to it
-      datafile.println(((log_count<10)?"0":"")+String(log_count)+char(9)+String(Status)+char(9)+String(kecepatan)+char(9)+String(iBus)+char(9)+String(vBus)+char(9)+String(pBus)+char(9)+String(temp_kulkas)+"."); // TAB delimited
+      datafile.println(((log_count<10)?"0":"")+String(log_count)+";"+String(Status)+";"+String(kecepatan)+";"+String(iBus)+";"+String(vBus)+";"+String(pBus)+";"+String(temp_kulkas)+"."); // TAB delimited
       Serial.println(((log_count<10)?"0":"")+String(log_count)+" New Record Added");
     }
     datafile.close();
@@ -475,7 +482,7 @@ void systemSetup()
   webpage = ""; // don't delete this command, it ensures the server works reliably!
   append_page_header();
   String IPaddress="192.168.4.1";
-  webpage += F("<h3 style=\"color:orange;font-size:24px\">Wifi Setup</h3>");
+  webpage += F("<h3 style=\"color:orange;font-size:24px\">Configuration</h3>");
   webpage += F("<meta http-equiv='refresh' content='200'/ URL=http://");
   webpage += IPaddress+ "/setting>";
     webpage += "<form action='http://"+IPaddress+"/setting' method='POST'>";
