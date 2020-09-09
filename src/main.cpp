@@ -160,6 +160,7 @@ interval_update=log_interval;
     kecepatan = 6004; // Daya motor dalam satuan W
     delay(1);
     temp_kulkas = -20;
+    Status=10;
     // delay(1);
     // io_pin = uFrame_readVal(REG_GPIO);
     // delay(1);
@@ -496,7 +497,7 @@ void systemSetup()
   webpage += F("<input type='submit' value='Enter'><br><br>");
   webpage += F("</form>");
   webpage += "<form action='http://"+IPaddress+"/setting' method='POST'>";
-  webpage += "Logging Interval (currently = "+String(log_interval)+"-Secs) (1=15secs)<br>";
+  webpage += "Logging Interval (currently = "+String(log_interval/1000)+"-Secs) (1=1secs)<br>";
   webpage += F("<input type='text' name='log_interval_in' value=''><br>");
   webpage += F("<input type='submit' value='Enter'><br><br>");
   webpage += F("</form>");
@@ -512,12 +513,16 @@ void systemSetup()
       {
         if (client_response.toInt()) speed_in = client_response.toInt(); //else kecepatan = speed_default;
         Serial.println(speed_in);
+        update_speed=1;
       }
       if (Argument_Name == "log_interval_in") 
       {
-        if (client_response.toInt()) log_interval = client_response.toInt();
-        update_speed=1;
-        Serial.println(log_interval);
+        if (client_response.toInt())
+          {
+            log_interval = 1000* client_response.toInt();
+            Serial.println(log_interval);
+          } 
+        
       }
       if (Argument_Name == "kontrol_motor") 
       {
