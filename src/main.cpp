@@ -3,8 +3,8 @@
 #include <UI_stmIPM.h>
 #include <SD.h>
 String  webpage = "";
-const char* ssid     = "jomblo";
-const char* password = "hilman123";
+const char* ssid     = "JOMBLO";
+const char* password = "cariindong";
 #include "CSS.h"
 #include "FS.h"
 #include <SPI.h>
@@ -28,7 +28,7 @@ record_type sensor_data[table_size+1];
 uint16_t vBus = 0, pBus = 0, iBus = 0;
 int16_t kecepatan = 0,  temp_kulkas = 0;
 uint8_t Status = 0, kontrol = 0, gpio=0, io_pin=0;
-long interval_update,log_interval=120000;
+long interval_update,log_interval=500;
 long time_last = 0, time_last1 = 0;
 ESP8266WebServer server(80);
 bool SPIFFS_present = false;
@@ -150,27 +150,27 @@ interval_update=log_interval;
         motorState = "STOP";
       }
       
-    delay(1);
-    io_pin = 1;
-    delay(1);
-    pBus = 150; // Daya motor dalam satuan W
-    delay(1);
-    vBus = 600; // Tegangan motor dalam satuan V
-    delay(1);
-    kecepatan = 6004; // Daya motor dalam satuan W
-    delay(1);
-    temp_kulkas = -20;
-    Status=10;
     // delay(1);
-    // io_pin = uFrame_readVal(REG_GPIO);
+    // io_pin = 1;
     // delay(1);
-    // pBus = uFrame_readVal(REG_MOTOR_POWER); // Daya motor dalam satuan W
+    // pBus = 150; // Daya motor dalam satuan W
     // delay(1);
-    // vBus = uFrame_readVal(REG_BUS_VOLTAGE); // Tegangan motor dalam satuan V
+    // vBus = 600; // Tegangan motor dalam satuan V
     // delay(1);
-    // kecepatan = sFrame_readVal(REG_SPEED_MEAS); // Daya motor dalam satuan W
-    // //delay(1);
-    // //temp_kulkas = sFrame_readVal(REG_ADC_TEMP);
+    // kecepatan = 6004; // Daya motor dalam satuan W
+    // delay(1);
+    // temp_kulkas = -20;
+    // Status=10;
+    delay(1);
+    io_pin = uFrame_readVal(REG_GPIO);
+    delay(1);
+    pBus = uFrame_readVal(REG_MOTOR_POWER); // Daya motor dalam satuan W
+    delay(1);
+    vBus = uFrame_readVal(REG_BUS_VOLTAGE); // Tegangan motor dalam satuan V
+    delay(1);
+    kecepatan = sFrame_readVal(REG_SPEED_MEAS); // Daya motor dalam satuan W
+    delay(1);
+  //  temp_kulkas = sFrame_readVal(REG_ADC_TEMP);
     // temp_kulkas =0;
 
     if (vBus != 0)iBus = (float)((pBus * 1000) / vBus); // arus motor dalam satuan mA
